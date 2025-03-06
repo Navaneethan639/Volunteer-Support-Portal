@@ -6,6 +6,9 @@ from datetime import datetime
 import time
 import random
 import string
+import json
+
+creds_dict = st.secrets["gcp_service_account"]
 
 # Google Sheets API Setup
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
@@ -13,7 +16,8 @@ SERVICE_ACCOUNT_FILE = "service_account.json"
 
 # Google Sheets Authentication
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
+creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
+#creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
 client = gspread.authorize(creds)
 
 # Load the Participants and Requests sheets
