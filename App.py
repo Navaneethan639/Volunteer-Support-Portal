@@ -8,26 +8,35 @@ import random
 import string
 import json
 
-creds_dict = st.secrets["gcp_service_account"]
-
 # Google Sheets API Setup
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
 SERVICE_ACCOUNT_FILE = "service_account.json"
 
-# Ensure creds_dict is a dictionary
-# if not isinstance(creds_dict, dict):
-#     creds_dict = dict(creds_dict)  # Convert AttrDict to dictionary
+st.write("🔍 Checking credentials...")
 
-# creds = Credentials.from_service_account_info(creds_dict)
+# Verify if Streamlit secrets are correctly loaded
+if "gcp_service_account" not in st.secrets:
+    st.error("❌ `gcp_service_account` is missing in Streamlit secrets!")
+    st.stop()
 
-# Define correct scopes
+# Print loaded keys for debugging (DO NOT print private key)
+creds_dict = st.secrets["gcp_service_account"]
+st.write("✅ Service account loaded:", creds_dict["client_email"])
+
+# Define Google API scopes
 SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",  # Read & write access to Google Sheets
-    "https://www.googleapis.com/auth/drive"  # Required if accessing by URL
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
 ]
 
-# Load credentials
-creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+try:
+    creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    client = gspread.authorize(creds)
+    st.success("✅ Authentication successful!")
+except Exception as e:
+    st.error(f"❌ Authentication failed: {e}")
+    st.stop()
+
 
 # Google Sheets Authentication
 #scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
