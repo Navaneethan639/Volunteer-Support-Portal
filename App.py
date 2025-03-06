@@ -14,9 +14,15 @@ creds_dict = st.secrets["gcp_service_account"]
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
 SERVICE_ACCOUNT_FILE = "service_account.json"
 
+# Ensure creds_dict is a standard Python dictionary
+if isinstance(creds_dict, dict):
+    creds = Credentials.from_service_account_info(creds_dict)
+else:
+    raise TypeError("creds_dict must be a dictionary")
+
 # Google Sheets Authentication
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
+#creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
 #creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
 client = gspread.authorize(creds)
 
