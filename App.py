@@ -37,7 +37,6 @@ except Exception as e:
     st.error(f"❌ Authentication failed: {e}")
     st.stop()
 
-
 # Google Sheets Authentication
 #scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 #creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
