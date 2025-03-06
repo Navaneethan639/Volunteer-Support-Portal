@@ -15,13 +15,22 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJ
 SERVICE_ACCOUNT_FILE = "service_account.json"
 
 # Ensure creds_dict is a dictionary
-if not isinstance(creds_dict, dict):
-    creds_dict = dict(creds_dict)  # Convert AttrDict to dictionary
+# if not isinstance(creds_dict, dict):
+#     creds_dict = dict(creds_dict)  # Convert AttrDict to dictionary
 
-creds = Credentials.from_service_account_info(creds_dict)
+# creds = Credentials.from_service_account_info(creds_dict)
+
+# Define correct scopes
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",  # Read & write access to Google Sheets
+    "https://www.googleapis.com/auth/drive"  # Required if accessing by URL
+]
+
+# Load credentials
+creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
 # Google Sheets Authentication
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+#scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 #creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
 #creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
 client = gspread.authorize(creds)
