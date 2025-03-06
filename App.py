@@ -12,16 +12,16 @@ import json
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
 SERVICE_ACCOUNT_FILE = "service_account.json"
 
-st.write("🔍 Checking credentials...")
+# st.write("🔍 Checking credentials...")
 
 # Verify if Streamlit secrets are correctly loaded
 if "gcp_service_account" not in st.secrets:
-    st.error("❌ `gcp_service_account` is missing in Streamlit secrets!")
+    # st.error("❌ `gcp_service_account` is missing in Streamlit secrets!")
     st.stop()
 
 # Print loaded keys for debugging (DO NOT print private key)
 creds_dict = st.secrets["gcp_service_account"]
-st.write("✅ Service account loaded:", creds_dict["client_email"])
+# st.write("✅ Service account loaded:", creds_dict["client_email"])
 
 # Define Google API scopes
 SCOPES = [
@@ -32,7 +32,7 @@ SCOPES = [
 try:
     creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
     client = gspread.authorize(creds)
-    st.success("✅ Authentication successful!")
+    # st.success("✅ Authentication successful!")
 except Exception as e:
     st.error(f"❌ Authentication failed: {e}")
     st.stop()
@@ -45,8 +45,8 @@ except Exception as e:
 #client = gspread.authorize(creds)
 
 # Load the Participants and Requests sheets
-# sheet = client.open_by_url(SHEET_URL)
-sheet = client.open('Volunteer Support Portal')
+sheet = client.open_by_url(SHEET_URL)
+# sheet = client.open('Volunteer Support Portal')
 participants_sheet = sheet.worksheet("Volunteer Details")
 requests_sheet = sheet.worksheet("Requests")
 
