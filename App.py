@@ -45,7 +45,8 @@ except Exception as e:
 #client = gspread.authorize(creds)
 
 # Load the Participants and Requests sheets
-sheet = client.open_by_url(SHEET_URL)
+# sheet = client.open_by_url(SHEET_URL)
+sheet = client.open('Volunteer Support Portal')
 participants_sheet = sheet.worksheet("Volunteer Details")
 requests_sheet = sheet.worksheet("Requests")
 
