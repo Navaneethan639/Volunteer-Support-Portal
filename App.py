@@ -42,7 +42,7 @@ except Exception as e:
 #scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 #creds = Credentials.from_service_account_info(json.loads(json.dumps(creds_dict)))
 #creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scope)
-client = gspread.authorize(creds)
+#client = gspread.authorize(creds)
 
 # Load the Participants and Requests sheets
 sheet = client.open_by_url(SHEET_URL)
