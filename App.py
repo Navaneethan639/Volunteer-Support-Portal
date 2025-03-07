@@ -113,18 +113,18 @@ def normalize_phone_number(phone_number, country_code="IN"):
     except phonenumbers.NumberParseException:
         return None
 
-# Generate dynamic country code list with flags
-def get_country_flag(country_code):
-    try:
-        return emoji.emojize(f":flag-{country_code.lower()}:", language='alias')
-    except:
-        return "🏳️"
+# Function to get Unicode flag
+def get_unicode_flag(country_code):
+    OFFSET = 127397
+    return "".join([chr(ord(c) + OFFSET) for c in country_code.upper()])
 
+# Generate dynamic country code list with flags
 country_code_map = {}
 for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
     region = region_code_for_country_code(cc)
     if region:  # Ensure the region is valid
-        key = f"{get_country_flag(region)} {region} (+{cc})"
+        flag = get_unicode_flag(region) if region else "🏳️"
+        key = f"{flag} {region} (+{cc})"
         country_code_map[key] = str(cc)
 
 # **Ensure India (+91) is in the list**
@@ -152,13 +152,12 @@ if email and "forgot_email_clicked" not in st.session_state:
         volunteer_category = matching_record.iloc[0]["Volunteer Category"]
         name = matching_record.iloc[0]["Name"]
         phone_number = str(matching_record.iloc[0]["Phone Number"]).strip()
-        
-        # Auto-detect country code for stored numbers
-        if phone_number.startswith("+"):
-            phone_number = normalize_phone_number(phone_number)
-        else:
-            phone_number = normalize_phone_number(phone_number, "IN")  # Assume India if no code
 
+        # Auto-detect country code for stored numbers
+        if not phone_number.startswith("+"):
+            phone_number = f"+91{phone_number}"  # Assume India if no code
+
+        phone_number = normalize_phone_number(phone_number)
         email_verified = True
     else:
         show_forgot_email = True
@@ -181,11 +180,11 @@ if st.session_state.get("forgot_email_clicked", False):
         raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
 
     if raw_phone:
-        normalized_input_number = normalize_phone_number(raw_phone, country_code)
+        normalized_input_number = normalize_phone_number(f"+{country_code}{raw_phone}")
 
         # Normalize stored phone numbers for verification
         participants_data["Normalized Phone Number"] = participants_data["Phone Number"].astype(str).apply(
-            lambda num: normalize_phone_number(num, "IN") if not num.startswith("+") else normalize_phone_number(num)
+            lambda num: normalize_phone_number(f"+91{num}") if not num.startswith("+") else normalize_phone_number(num)
         )
 
         phone_match = participants_data[participants_data["Normalized Phone Number"] == normalized_input_number]
