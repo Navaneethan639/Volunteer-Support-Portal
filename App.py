@@ -177,7 +177,7 @@ if st.session_state.get("forgot_email_clicked", False):
         country_code = country_code_map.get(selected_country, "91")  # Avoid KeyError
 
     with col2:
-        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
+        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter phone number without country code")
 
     if raw_phone:
         normalized_input_number = normalize_phone_number(f"+{country_code}{raw_phone}")
