@@ -103,6 +103,33 @@ st.markdown("""
 
 """, unsafe_allow_html=True)
 
+# Inject custom CSS for Phone number field styling
+st.markdown("""
+    <style>
+        /* Container to make both fields aligned */
+        .phone-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Country Code Dropdown Styling */
+        .stSelectbox {
+            width: 120px !important;  /* Reduce width */
+            text-align: center !important; /* Center text */
+        }
+        
+        /* Phone Number Input Styling */
+        .phone-input {
+            flex: 1;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Function to normalize phone numbers to E.164 format
 def normalize_phone_number(phone_number, country_code="IN"):
     try:
@@ -167,7 +194,7 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
 
 # **Phone Input - Without Flags**
 if st.session_state.get("forgot_email_clicked", False):
-    col1, col2 = st.columns([1.5, 3])  
+    col1, col2 = st.columns([0.7, 2.3])  
 
     with col1:
         selected_country = st.selectbox("🌍 Select Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
