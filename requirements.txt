@@ -7,5 +7,4 @@ google-auth-httplib2
 phonenumbers
 emoji
 streamlit-option-menu
-streamlit_country_select
 
