@@ -7,6 +7,7 @@ import time
 import random
 import string
 import json
+import emoji
 import phonenumbers
 from phonenumbers.phonenumberutil import region_code_for_country_code
 
@@ -103,7 +104,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Function to normalize phone numbers to E.164 format
-def normalize_phone_number(phone_number, country_code):
+def normalize_phone_number(phone_number, country_code="IN"):
     try:
         parsed_number = phonenumbers.parse(phone_number, country_code)
         if not phonenumbers.is_valid_number(parsed_number):
@@ -112,12 +113,22 @@ def normalize_phone_number(phone_number, country_code):
     except phonenumbers.NumberParseException:
         return None
 
-# Generate dynamic country code list
+# Generate dynamic country code list with flags
+def get_country_flag(country_code):
+    try:
+        return emoji.emojize(f":flag-{country_code.lower()}:", language='alias')
+    except:
+        return "🏳️"
+
 country_code_map = {
-    f"{region_code_for_country_code(cc)} (+{cc})": cc
+    f"{get_country_flag(region_code_for_country_code(cc))} {region_code_for_country_code(cc)} (+{cc})": cc
     for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys())
     if region_code_for_country_code(cc)  # Ensure valid country codes only
 }
+
+# Set default country as India (+91)
+default_country = "🇮🇳 IN (+91)"
+default_country_code = "91"
 
 # Streamlit UI
 st.title("🔹 Raise a Request")
@@ -137,7 +148,14 @@ if email and "forgot_email_clicked" not in st.session_state:
     if not matching_record.empty:
         volunteer_category = matching_record.iloc[0]["Volunteer Category"]
         name = matching_record.iloc[0]["Name"]
-        phone_number = normalize_phone_number(str(matching_record.iloc[0]["Phone Number"]), "ZZ")  # Normalize stored number
+        phone_number = str(matching_record.iloc[0]["Phone Number"]).strip()
+        
+        # Auto-detect country code for stored numbers
+        if phone_number.startswith("+"):
+            phone_number = normalize_phone_number(phone_number)
+        else:
+            phone_number = normalize_phone_number(phone_number, "IN")  # Assume India if no code
+
         email_verified = True
     else:
         show_forgot_email = True
@@ -148,19 +166,23 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# Phone Input with **Dynamic Country Code Selection**
+# Phone Input with **Flags + Country Code Selector**
 if st.session_state.get("forgot_email_clicked", False):
-    selected_country = st.selectbox("🌍 Select Your Country", list(country_code_map.keys()))
-    country_code = country_code_map[selected_country]
+    col1, col2 = st.columns([1.2, 2.5])  # Adjust widths
 
-    raw_phone = st.text_input("📞 Phone Number (without country code)", placeholder="Enter number")
+    with col1:
+        selected_country = st.selectbox("🌍 Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
+        country_code = country_code_map[selected_country]
+
+    with col2:
+        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
 
     if raw_phone:
         normalized_input_number = normalize_phone_number(raw_phone, country_code)
-        
-        # Normalize all stored phone numbers for comparison
+
+        # Normalize stored phone numbers for verification
         participants_data["Normalized Phone Number"] = participants_data["Phone Number"].astype(str).apply(
-            lambda num: normalize_phone_number(num, "ZZ")
+            lambda num: normalize_phone_number(num, "IN") if not num.startswith("+") else normalize_phone_number(num)
         )
 
         phone_match = participants_data[participants_data["Normalized Phone Number"] == normalized_input_number]
