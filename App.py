@@ -120,15 +120,18 @@ def get_country_flag(country_code):
     except:
         return "🏳️"
 
-country_code_map = {
-    f"{get_country_flag(region_code_for_country_code(cc))} {region_code_for_country_code(cc)} (+{cc})": cc
-    for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys())
-    if region_code_for_country_code(cc)  # Ensure valid country codes only
-}
+country_code_map = {}
+for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
+    region = region_code_for_country_code(cc)
+    if region:  # Ensure the region is valid
+        key = f"{get_country_flag(region)} {region} (+{cc})"
+        country_code_map[key] = str(cc)
 
-# Set default country as India (+91)
+# **Ensure India (+91) is in the list**
 default_country = "🇮🇳 IN (+91)"
 default_country_code = "91"
+if default_country not in country_code_map:
+    country_code_map[default_country] = default_country_code
 
 # Streamlit UI
 st.title("🔹 Raise a Request")
@@ -172,7 +175,7 @@ if st.session_state.get("forgot_email_clicked", False):
 
     with col1:
         selected_country = st.selectbox("🌍 Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
-        country_code = country_code_map[selected_country]
+        country_code = country_code_map.get(selected_country, "91")  # Avoid KeyError
 
     with col2:
         raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
