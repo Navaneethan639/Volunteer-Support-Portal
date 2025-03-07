@@ -8,7 +8,7 @@ import random
 import string
 import json
 import phonenumbers
-from streamlit_phone_input.streamlit_phone_input import phone_input
+from phonenumbers.phonenumberutil import region_code_for_country_code
 
 # Google Sheets API Setup
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
@@ -103,15 +103,21 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Function to normalize phone numbers to E.164 format
-def normalize_phone_number(phone_number, default_region="IN"):
+def normalize_phone_number(phone_number, country_code):
     try:
-        parsed_number = phonenumbers.parse(phone_number, default_region)
-        if phonenumbers.is_valid_number(parsed_number):
-            return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
-        else:
+        parsed_number = phonenumbers.parse(phone_number, country_code)
+        if not phonenumbers.is_valid_number(parsed_number):
             return None
+        return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
     except phonenumbers.NumberParseException:
         return None
+
+# Generate dynamic country code list
+country_code_map = {
+    f"{region_code_for_country_code(cc)} (+{cc})": cc
+    for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys())
+    if region_code_for_country_code(cc)  # Ensure valid country codes only
+}
 
 # Streamlit UI
 st.title("🔹 Raise a Request")
@@ -131,7 +137,7 @@ if email and "forgot_email_clicked" not in st.session_state:
     if not matching_record.empty:
         volunteer_category = matching_record.iloc[0]["Volunteer Category"]
         name = matching_record.iloc[0]["Name"]
-        phone_number = normalize_phone_number(str(matching_record.iloc[0]["Phone Number"]))  # Normalize sheet number
+        phone_number = normalize_phone_number(str(matching_record.iloc[0]["Phone Number"]), "ZZ")  # Normalize stored number
         email_verified = True
     else:
         show_forgot_email = True
@@ -142,16 +148,21 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# Show Phone Number input if "Forgot my Email ID" was clicked
+# Phone Input with **Dynamic Country Code Selection**
 if st.session_state.get("forgot_email_clicked", False):
-    phone_input_value = phone_input("📞 Phone Number (with country code)")
-    
-    if phone_input_value:
-        normalized_input_number = normalize_phone_number(phone_input_value)
+    selected_country = st.selectbox("🌍 Select Your Country", list(country_code_map.keys()))
+    country_code = country_code_map[selected_country]
+
+    raw_phone = st.text_input("📞 Phone Number (without country code)", placeholder="Enter number")
+
+    if raw_phone:
+        normalized_input_number = normalize_phone_number(raw_phone, country_code)
         
-        # Normalize all sheet phone numbers before comparison
-        participants_data["Normalized Phone Number"] = participants_data["Phone Number"].astype(str).apply(normalize_phone_number)
-        
+        # Normalize all stored phone numbers for comparison
+        participants_data["Normalized Phone Number"] = participants_data["Phone Number"].astype(str).apply(
+            lambda num: normalize_phone_number(num, "ZZ")
+        )
+
         phone_match = participants_data[participants_data["Normalized Phone Number"] == normalized_input_number]
 
         if not phone_match.empty:
