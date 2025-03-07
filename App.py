@@ -7,6 +7,8 @@ import time
 import random
 import string
 import json
+import phonenumbers
+from streamlit_phone_input.streamlit_phone_input import phone_input
 
 # Google Sheets API Setup
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
@@ -100,6 +102,17 @@ st.markdown("""
 
 """, unsafe_allow_html=True)
 
+# Function to normalize phone numbers to E.164 format
+def normalize_phone_number(phone_number, default_region="IN"):
+    try:
+        parsed_number = phonenumbers.parse(phone_number, default_region)
+        if phonenumbers.is_valid_number(parsed_number):
+            return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
+        else:
+            return None
+    except phonenumbers.NumberParseException:
+        return None
+
 # Streamlit UI
 st.title("🔹 Raise a Request")
 
@@ -118,7 +131,7 @@ if email and "forgot_email_clicked" not in st.session_state:
     if not matching_record.empty:
         volunteer_category = matching_record.iloc[0]["Volunteer Category"]
         name = matching_record.iloc[0]["Name"]
-        phone_number = str(matching_record.iloc[0]["Phone Number"])  # Convert to string
+        phone_number = normalize_phone_number(str(matching_record.iloc[0]["Phone Number"]))  # Normalize sheet number
         email_verified = True
     else:
         show_forgot_email = True
@@ -131,14 +144,20 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
 
 # Show Phone Number input if "Forgot my Email ID" was clicked
 if st.session_state.get("forgot_email_clicked", False):
-    phone_input = st.text_input("📞 Phone Number", placeholder="Enter your Phone Number")
-    if phone_input:
-        phone_match = participants_data[participants_data["Phone Number"].astype(str) == phone_input]
+    phone_input_value = phone_input("📞 Phone Number (with country code)")
+    
+    if phone_input_value:
+        normalized_input_number = normalize_phone_number(phone_input_value)
+        
+        # Normalize all sheet phone numbers before comparison
+        participants_data["Normalized Phone Number"] = participants_data["Phone Number"].astype(str).apply(normalize_phone_number)
+        
+        phone_match = participants_data[participants_data["Normalized Phone Number"] == normalized_input_number]
+
         if not phone_match.empty:
             volunteer_category = phone_match.iloc[0]["Volunteer Category"]
             name = phone_match.iloc[0]["Name"]
-            email = phone_match.iloc[0]["Email ID"]  # Get email from database
-            phone_number = phone_input  # Use user input as phone number
+            email = phone_match.iloc[0]["Email ID"]
             phone_verified = True
             st.success("✅ Now you can fill the request type and description to submit the form.")
         else:
