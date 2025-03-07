@@ -10,6 +10,7 @@ import json
 import emoji
 import phonenumbers
 from phonenumbers.phonenumberutil import region_code_for_country_code
+import streamlit_country_select as cselect
 
 # Google Sheets API Setup
 SHEET_URL = "https://docs.google.com/spreadsheets/d/17Jf186s0G5uQrT6itt8KuiP9GhJqVtyqREyc_kYFS9M/edit?gid=0#gid=0"
@@ -113,7 +114,7 @@ def normalize_phone_number(phone_number, country_code="IN"):
     except phonenumbers.NumberParseException:
         return None
 
-# Generate country code list
+# Get country codes
 country_code_map = {}
 for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
     region = region_code_for_country_code(cc)
@@ -162,39 +163,33 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# **Phone Input - Styled Cleanly**
+# **Phone Input - Styled Properly**
 if st.session_state.get("forgot_email_clicked", False):
     st.markdown("""
     <style>
         .phone-container {
             display: flex;
             width: 100%;
-        }
-        .country-select {
-            width: 30%;
-            border-radius: 8px 0px 0px 8px;
-            border: 1px solid #ccc;
-            padding: 8px;
-            font-size: 16px;
+            gap: 10px;
         }
         .phone-input {
-            width: 70%;
-            border-radius: 0px 8px 8px 0px;
+            flex: 1;
+            border-radius: 6px;
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 10px;
             font-size: 16px;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1.2, 2.5])  
+    col1, col2 = st.columns([1.5, 3])  
 
     with col1:
-        selected_country = st.selectbox("🌍 Select Country", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
-        country_code = country_code_map.get(selected_country, "91")  
+        selected_country = cselect.select(placeholder="🌍 Select Country Code", default_country="IN")
+        country_code = str(selected_country['dial_code']).replace("+", "")
 
     with col2:
-        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
+        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter phone number without country code")
 
     # Validate and normalize input
     if raw_phone:
