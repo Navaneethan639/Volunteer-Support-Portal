@@ -113,20 +113,15 @@ def normalize_phone_number(phone_number, country_code="IN"):
     except phonenumbers.NumberParseException:
         return None
 
-# Function to get Unicode flag
-def get_unicode_flag(country_code):
-    OFFSET = 127397
-    return "".join([chr(ord(c) + OFFSET) for c in country_code.upper()])
-
-# Generate dynamic country code list
+# Generate country code list
 country_code_map = {}
 for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
     region = region_code_for_country_code(cc)
-    if region:  # Ensure the region is valid
+    if region:
         key = f"{region} (+{cc})"
         country_code_map[key] = str(cc)
 
-# **Ensure India (+91) is in the list**
+# Ensure India (+91) is default
 default_country = "IN (+91)"
 default_country_code = "91"
 if default_country not in country_code_map:
@@ -167,22 +162,41 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# Phone Input with **Flags + Country Code Selector**
+# **Phone Input - Styled Cleanly**
 if st.session_state.get("forgot_email_clicked", False):
-    col1, col2 = st.columns([1.2, 2.5])  # Adjust widths
+    st.markdown("""
+    <style>
+        .phone-container {
+            display: flex;
+            width: 100%;
+        }
+        .country-select {
+            width: 30%;
+            border-radius: 8px 0px 0px 8px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .phone-input {
+            width: 70%;
+            border-radius: 0px 8px 8px 0px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1.2, 2.5])  
 
     with col1:
-        selected_country = st.selectbox("🌍 Select Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
-        country_code = country_code_map.get(selected_country, "91")  # Avoid KeyError
-
-        # Display flag separately
-        region_code = selected_country.split(" ")[0]  # Extract country code (e.g., "IN")
-        flag_emoji = get_unicode_flag(region_code)
-        st.markdown(f"**{flag_emoji} {selected_country}**", unsafe_allow_html=True)
+        selected_country = st.selectbox("🌍 Select Country", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
+        country_code = country_code_map.get(selected_country, "91")  
 
     with col2:
         raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
 
+    # Validate and normalize input
     if raw_phone:
         normalized_input_number = normalize_phone_number(f"+{country_code}{raw_phone}")
 
