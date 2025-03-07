@@ -5,5 +5,5 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 phonenumbers
-streamlit-phone-input
+streamlit-option-menu
 
