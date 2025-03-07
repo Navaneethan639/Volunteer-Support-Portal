@@ -118,17 +118,16 @@ def get_unicode_flag(country_code):
     OFFSET = 127397
     return "".join([chr(ord(c) + OFFSET) for c in country_code.upper()])
 
-# Generate dynamic country code list with flags
+# Generate dynamic country code list
 country_code_map = {}
 for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
     region = region_code_for_country_code(cc)
     if region:  # Ensure the region is valid
-        flag = get_unicode_flag(region) if region else "🏳️"
-        key = f"{flag} {region} (+{cc})"
+        key = f"{region} (+{cc})"
         country_code_map[key] = str(cc)
 
 # **Ensure India (+91) is in the list**
-default_country = "🇮🇳 IN (+91)"
+default_country = "IN (+91)"
 default_country_code = "91"
 if default_country not in country_code_map:
     country_code_map[default_country] = default_country_code
@@ -173,11 +172,16 @@ if st.session_state.get("forgot_email_clicked", False):
     col1, col2 = st.columns([1.2, 2.5])  # Adjust widths
 
     with col1:
-        selected_country = st.selectbox("🌍 Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
+        selected_country = st.selectbox("🌍 Select Country Code", list(country_code_map.keys()), index=list(country_code_map.keys()).index(default_country))
         country_code = country_code_map.get(selected_country, "91")  # Avoid KeyError
 
+        # Display flag separately
+        region_code = selected_country.split(" ")[0]  # Extract country code (e.g., "IN")
+        flag_emoji = get_unicode_flag(region_code)
+        st.markdown(f"**{flag_emoji} {selected_country}**", unsafe_allow_html=True)
+
     with col2:
-        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter phone number without country code")
+        raw_phone = st.text_input("📞 Phone Number", placeholder="Enter number")
 
     if raw_phone:
         normalized_input_number = normalize_phone_number(f"+{country_code}{raw_phone}")
