@@ -113,15 +113,18 @@ def normalize_phone_number(phone_number, country_code="IN"):
     except phonenumbers.NumberParseException:
         return None
 
-# Generate country code list with flags
+# Generate country code list with SVG flags
 def get_country_code_map():
     country_code_map = {}
+    base_flag_url = "https://flagcdn.com/w40/{}.png"  # CDN for country flags
+
     for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
         region = region_code_for_country_code(cc)
         if region:
-            flag_emoji = f"{chr(127462 + ord(region[0]) - 65)}{chr(127462 + ord(region[1]) - 65)}" if len(region) == 2 else "🌍"
-            key = f"{flag_emoji} {region} (+{cc})"
+            flag_url = base_flag_url.format(region.lower())
+            key = f'<img src="{flag_url}" width="20"/> {region} (+{cc})'
             country_code_map[key] = str(cc)
+    
     return country_code_map
 
 country_code_map = get_country_code_map()
@@ -167,7 +170,7 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# **Phone Input - Styled Properly**
+# **Phone Input - Styled with SVG Flags**
 if st.session_state.get("forgot_email_clicked", False):
     st.markdown("""
     <style>
@@ -182,6 +185,9 @@ if st.session_state.get("forgot_email_clicked", False):
             border: 1px solid #ccc;
             padding: 10px;
             font-size: 16px;
+        }
+        .custom-selectbox img {
+            margin-right: 10px;
         }
     </style>
     """, unsafe_allow_html=True)
