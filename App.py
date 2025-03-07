@@ -113,27 +113,22 @@ def normalize_phone_number(phone_number, country_code="IN"):
     except phonenumbers.NumberParseException:
         return None
 
-# Generate country code list with SVG flags
+# Generate country code list (Without Flags)
 def get_country_code_map():
     country_code_map = {}
-    base_flag_url = "https://flagcdn.com/w40/{}.png"  # CDN for country flags
 
     for cc in sorted(phonenumbers.COUNTRY_CODE_TO_REGION_CODE.keys()):
-        region = region_code_for_country_code(cc)
-        if region:
-            flag_url = base_flag_url.format(region.lower())
-            key = f'<img src="{flag_url}" width="20"/> {region} (+{cc})'
+        regions = phonenumbers.COUNTRY_CODE_TO_REGION_CODE[cc]
+        if regions:
+            region = regions[0]  # Use the first region if multiple exist
+            key = f"{region} (+{cc})"
             country_code_map[key] = str(cc)
-    
+
     return country_code_map
 
+# Get country data
 country_code_map = get_country_code_map()
-
-# Ensure India (+91) is default
-default_country = "🇮🇳 IN (+91)"
-default_country_code = "91"
-if default_country not in country_code_map:
-    country_code_map[default_country] = default_country_code
+default_country = "IN (+91)"  # Default to India
 
 # Streamlit UI
 st.title("🔹 Raise a Request")
@@ -170,28 +165,8 @@ if show_forgot_email and "forgot_email_clicked" not in st.session_state:
     if st.button("🔍 Forgot my Email ID"):
         st.session_state["forgot_email_clicked"] = True
 
-# **Phone Input - Styled with SVG Flags**
+# **Phone Input - Without Flags**
 if st.session_state.get("forgot_email_clicked", False):
-    st.markdown("""
-    <style>
-        .phone-container {
-            display: flex;
-            width: 100%;
-            gap: 10px;
-        }
-        .phone-input {
-            flex: 1;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .custom-selectbox img {
-            margin-right: 10px;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
     col1, col2 = st.columns([1.5, 3])  
 
     with col1:
@@ -220,6 +195,7 @@ if st.session_state.get("forgot_email_clicked", False):
             st.success("✅ Now you can fill the request type and description to submit the form.")
         else:
             st.error("❌ Phone number does not exist in the database.")
+
 
 # Define request type options based on participant type
 request_options = ["", "Seva Team", "Health Team", "Sahaya (Support) Team", "Others"]
