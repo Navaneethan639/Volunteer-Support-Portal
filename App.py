@@ -140,6 +140,7 @@ phone_verified = False
 volunteer_category = None
 name = None
 phone_number = None
+gender = None
 show_forgot_email = False
 
 # Check if email exists
@@ -148,6 +149,7 @@ if email and "forgot_email_clicked" not in st.session_state:
     if not matching_record.empty:
         volunteer_category = matching_record.iloc[0]["Volunteer Category"]
         name = matching_record.iloc[0]["Name"]
+        gender = matching_record.iloc[0]["Gender"]
         phone_number = str(matching_record.iloc[0]["Phone Number"]).strip()
 
         # Auto-detect country code for stored numbers
@@ -190,6 +192,7 @@ if st.session_state.get("forgot_email_clicked", False):
         if not phone_match.empty:
             volunteer_category = phone_match.iloc[0]["Volunteer Category"]
             name = phone_match.iloc[0]["Name"]
+            gender = phone_match.iloc[0]["Gender"]
             email = phone_match.iloc[0]["Email ID"]
             phone_verified = True
             st.success("✅ Now you can fill the request type and description to submit the form.")
@@ -319,6 +322,7 @@ if st.button("Submit Request"):
         requests_sheet.append_row([
             request_id,
             name,  # Name from Volunteer Details
+            gender, # Gender
             email,  # Email ID
             phone_number,  # Phone Number
             volunteer_category,
