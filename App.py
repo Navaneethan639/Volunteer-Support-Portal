@@ -225,6 +225,8 @@ def reset_form():
     st.session_state.sub_category = ""
     st.session_state.description = ""
     st.session_state.step_out_message = False  # Hide message
+    st.session_state.linga_seva_message = False
+    st.session_state.extension_request_message = False
     st.session_state.clear_form = False
     st.session_state.from_date = None  # Reset From Date
     st.session_state.to_date = None    # Reset To Date
@@ -232,6 +234,12 @@ def reset_form():
 # Initialize session state for step-out message
 if "step_out_message" not in st.session_state:
     st.session_state.step_out_message = False
+
+if "linga_seva_message" not in st.session_state:
+    st.session_state.linga_seva_message = False
+
+if "extension_request_message" not in st.session_state:
+    st.session_state.extension_request_message = False
 
 # Initialize form reset flag
 if "clear_form" not in st.session_state:
@@ -248,6 +256,8 @@ request_type = st.selectbox("📌 I want to reach out to:", request_options, ind
 if request_type != st.session_state.selected_request_type:
     st.session_state.selected_request_type = request_type
     st.session_state.step_out_message = False  # Hide message when request type changes
+    st.session_state.linga_seva_message = False
+    st.session_state.extension_request_message = False
 
     # Define dynamic sub-category options
     if request_type == "Seva Team":
@@ -266,13 +276,27 @@ sub_category = None
 if st.session_state.sub_category_options:
     sub_category = st.selectbox("📌 Sub Category", [""] + st.session_state.sub_category_options, index=0, key="sub_category")
 
-# Show information message for "Step out of Ashram"
+# Show information message based on selected sub-category
 if sub_category == "Step out of Ashram":
     st.session_state.step_out_message = True
+    st.session_state.linga_seva_message = False
+    st.session_state.extension_request_message = False
+elif sub_category == "Linga Seva":
+    st.session_state.step_out_message = False
+    st.session_state.linga_seva_message = True
+    st.session_state.extension_request_message = False
+elif sub_category == "Extension Request":
+    st.session_state.step_out_message = False
+    st.session_state.linga_seva_message = False
+    st.session_state.extension_request_message = True
 else:
-    st.session_state.step_out_message = False  # Hide message for other sub-categories
+    # Hide all messages when another sub-category is selected
+    st.session_state.step_out_message = False
+    st.session_state.linga_seva_message = False
+    st.session_state.extension_request_message = False
 
-# Show step-out message in proper format
+
+# Show Step-Out Message
 if st.session_state.step_out_message:
     st.markdown(
         """
@@ -282,6 +306,28 @@ if st.session_state.step_out_message:
                 <li>📅 <b>Mention the Dates of Departure & Expected Return</b></li>
                 <li>📝 <b>Specify the Reason for travel in the description</b></li>
             </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Show Linga Seva Message
+if st.session_state.linga_seva_message:
+    st.markdown(
+        """
+        <div style='color: #555555; background-color: #f8f9fa; padding: 12px; border-radius: 8px; font-size: 14px;'>
+            <b>⚠️ Applicable for both 5 days and 10 days Linga Seva</b>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Show Extension Request Message
+if st.session_state.extension_request_message:
+    st.markdown(
+        """
+        <div style='color: #555555; background-color: #f8f9fa; padding: 12px; border-radius: 8px; font-size: 14px;'>
+            <b>⚠️ Please mention the date until which you wish to extend and the reason why.</b>
         </div>
         """,
         unsafe_allow_html=True
