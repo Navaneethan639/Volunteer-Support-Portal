@@ -242,12 +242,12 @@ if request_type != st.session_state.selected_request_type:
 
     # Define dynamic sub-category options
     if request_type == "Seva Team":
-        st.session_state.sub_category_options = ["Seva Affecting Health", "Seva Change", "Others"]
+        st.session_state.sub_category_options = ["Seva Affecting Health", "Seva Change", "Linga Seva", "Devi Seva", "Prana Danam", "Adi Yogi Arpanam", "Others"]
         if volunteer_category == "Long Term Department Support":
             st.session_state.sub_category_options.insert(0, "Meet Seva Team")
     
     elif request_type == "Sahaya (Support) Team" and volunteer_category == "Long Term Department Support":
-        st.session_state.sub_category_options = ["Meet Sahaya Team", "Step out of Ashram", "Others"]
+        st.session_state.sub_category_options = ["Meet Sahaya Team", "Step out of Ashram", "3 days Silence", "Extension Request", "Others"]
     
     else:
         st.session_state.sub_category_options = []
