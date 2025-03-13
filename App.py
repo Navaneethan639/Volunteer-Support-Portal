@@ -344,18 +344,21 @@ if sub_category in date_required_sub_categories:
     st.session_state.from_date = datetime.today()
     st.session_state.to_date = datetime.today()
 
-    col1, col2 = st.columns(2)
+    if sub_category == "Extension Request":
+        # Show "To Date" picker in full width for "Extension Request"
+        st.session_state.to_date = st.date_input("📅 To Date", 
+            value=st.session_state.to_date, format="DD/MM/YYYY")
+    else:
+        # Use two-column layout for other subcategories
+        col1, col2 = st.columns(2)
 
-    # Show "From Date" picker for all except "Extension Request"
-    if sub_category != "Extension Request":
         with col1:
             st.session_state.from_date = st.date_input("📅 From Date", 
                 value=st.session_state.from_date, format="DD/MM/YYYY")
 
-    # Always show "To Date" picker
-    with col2:
-        st.session_state.to_date = st.date_input("📅 To Date", 
-            value=st.session_state.to_date, format="DD/MM/YYYY")
+        with col2:
+            st.session_state.to_date = st.date_input("📅 To Date", 
+                value=st.session_state.to_date, format="DD/MM/YYYY")
 
 else:
     st.session_state.from_date = None
