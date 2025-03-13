@@ -212,6 +212,13 @@ if "selected_request_type" not in st.session_state:
 if "sub_category_options" not in st.session_state:
     st.session_state.sub_category_options = []
 
+# Initialize session state for date fields
+if "from_date" not in st.session_state:
+    st.session_state.from_date = None
+
+if "to_date" not in st.session_state:
+    st.session_state.to_date = None
+
 # Function to reset form state
 def reset_form():
     st.session_state.request_type = ""
@@ -219,6 +226,8 @@ def reset_form():
     st.session_state.description = ""
     st.session_state.step_out_message = False  # Hide message
     st.session_state.clear_form = False
+    st.session_state.from_date = None  # Reset From Date
+    st.session_state.to_date = None    # Reset To Date
 
 # Initialize session state for step-out message
 if "step_out_message" not in st.session_state:
@@ -278,6 +287,27 @@ if st.session_state.step_out_message:
         unsafe_allow_html=True
     )
 
+# Define the sub-categories that require date selection
+date_required_sub_categories = {
+    "Linga Seva", "Devi Seva", "Prana Danam", "Adi Yogi Arpanam", 
+    "Step out of Ashram", "3 days Silence", "Extension Request"
+}
+
+# Show Date Pickers if the sub-category requires it
+if sub_category in date_required_sub_categories:
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.session_state.from_date = st.date_input("📅 From Date", 
+            value=datetime.today(), format="DD/MM/YYYY")
+
+    with col2:
+        st.session_state.to_date = st.date_input("📅 To Date", 
+            value=datetime.today(), format="DD/MM/YYYY")
+else:
+    st.session_state.from_date = None
+    st.session_state.to_date = None
+
 # Description (Mandatory)
 description = st.text_area("📝 Description of your request", key="description")
 
@@ -313,6 +343,8 @@ if st.button("Submit Request"):
         st.error("⚠️ Please select a Request Type.")
     elif st.session_state.sub_category_options and (not sub_category or sub_category == ""):
         st.error("⚠️ Please select a Sub Category.")
+    elif sub_category in date_required_sub_categories and (not st.session_state.from_date or not st.session_state.to_date):
+        st.error("⚠️ Please select both From Date and To Date.")
     elif not description.strip():
         st.error("⚠️ Please enter a description.")
     else:
@@ -322,12 +354,14 @@ if st.button("Submit Request"):
         requests_sheet.append_row([
             request_id,
             name,  # Name from Volunteer Details
-            gender, # Gender
+            gender,  # Gender
             email,  # Email ID
             phone_number,  # Phone Number
             volunteer_category,
             request_type,
             sub_category if sub_category else "None",
+            st.session_state.from_date.strftime("%d/%m/%Y") if st.session_state.from_date else "None",  # Store in dd/mm/yyyy format
+            st.session_state.to_date.strftime("%d/%m/%Y") if st.session_state.to_date else "None",
             description,
             str(datetime.now())
         ])
