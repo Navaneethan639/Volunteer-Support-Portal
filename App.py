@@ -198,7 +198,8 @@ if st.session_state.get("forgot_email_clicked", False):
             st.success("✅ Now you can fill the request type and description to submit the form.")
         else:
             st.error("❌ Phone number does not exist in the database.")
-
+            st.warning("⚠️ Please visit counter 23/24 at Welcome Point for further assistance with your request.")
+            
 
 # Define request type options based on participant type
 request_options = ["", "Seva Team", "Health Team", "Sahaya (Support) Team", "Others"]
