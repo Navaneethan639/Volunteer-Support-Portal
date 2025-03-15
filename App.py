@@ -111,36 +111,48 @@ st.markdown("""
     <style>
     body, .stApp { background-color: #ffffff !important; color: #333333 !important; }
 
-    /* Center the Form Heading */
+    /* Center the Heading */
     .stMarkdown h1 { text-align: center !important; margin-bottom: 20px !important; }
 
-    /* Add space below the heading */
-    .stMarkdown:first-child { margin-bottom: 20px !important; }
-
-    /* Bold Field Labels */
-    label { font-weight: bold !important; font-size: 16px !important; }
-
-    /* Ensure uniform height for input fields and dropdowns */
+    /* Ensure uniform height & padding for input fields and dropdowns */
     .stTextInput > div > div > input,
     .stSelectbox > div > div,
     .stTextArea > div > textarea {
         border-radius: 10px;
         border: 1px solid #ccc;
-        padding: 12px;
-        height: 48px !important; /* Adjusted for uniformity */
-        font-size: 15px !important;
+        padding: 10px 14px !important;
+        height: 50px !important; /* Ensures uniform height */
+        font-size: 16px !important;
+        vertical-align: middle !important;
     }
 
-    /* Add space between the first field and the heading */
-    .stTextInput:first-of-type, .stSelectbox:first-of-type {
-        margin-top: 10px !important;
+    /* Fix dropdown text alignment */
+    .stSelectbox > div[data-baseweb="select"] {
+        min-height: 50px !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
+    /* Fix dropdown padding issue */
+    .stSelectbox > div[data-baseweb="select"] div {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    /* Ensure spacing between fields */
+    .stTextInput, .stSelectbox, .stTextArea {
+        margin-bottom: 12px !important;
+    }
+
+    /* Bold Field Labels */
+    label { font-weight: bold !important; font-size: 16px !important; }
+
+    /* Button Styling */
     .stButton>button {
         border-radius: 8px;
         background-color: #f8f9fa;
         color: #007bff;
-        padding: 10px 15px;
+        padding: 12px 18px;
         border: 1px solid #007bff;
         font-size: 15px;
         cursor: pointer;
@@ -148,26 +160,13 @@ st.markdown("""
     }
     .stButton>button:hover { background-color: #007bff; color: white; }
     
+    /* Error & Info Messages */
     .error-message { color: #d9534f; font-weight: bold; margin-top: 10px; }
     .info-message { color: #5cb85c; font-weight: bold; margin-top: 10px; }
 
-    /* Fix for dropdown visibility issues */
-    .stSelectbox > div[data-baseweb="select"] {
-        min-height: 48px !important;
-        overflow: visible !important;
-    }
-
-    [data-baseweb="popover"] {
-        overflow: visible !important;
-    }
-
-    /* Optional: Prevent dropdown from being cut off */
-    div[role="listbox"] {
-        max-height: 250px !important;
-        overflow-y: auto !important;
-    }
     </style>
 """, unsafe_allow_html=True)
+
 
 
 
