@@ -172,7 +172,10 @@ div[role="listbox"] {
     overflow-y: auto !important;
 }
 
+/* Make <p> tags bold and slightly larger */
+p {
 
+}
 
 /* Adjust the spacing between input fields */
 div.stVerticalBlock {
