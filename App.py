@@ -383,29 +383,49 @@ else:
 # Description (Mandatory)
 description = st.text_area("📝 Description of your request", key="description")
 
-# Function to generate a unique request ID
+import random
+import string
+
+# Function to generate a unique request ID in incremental order
 def generate_unique_request_id(volunteer_category):
+    # Define request prefix mapping
     request_prefix = {
         "Ashram Volunteer": "AV",
         "Short Term Department Support": "STV",
         "Long Term Department Support": "LTV"
     }.get(volunteer_category, "REQ")
 
-    # Attempt to generate a unique 5-digit numeric ID
-    for _ in range(10000):
-        random_number = random.randint(10000, 99999)
-        request_id = f"{request_prefix}{random_number}"
-        if request_id not in existing_requests:
-            return request_id
+    # Add "REQ-" to the prefix
+    full_prefix = f"REQ-{request_prefix}"
 
-    # If all numeric IDs are taken, generate a 5-character alphanumeric ID
-    for _ in range(10000):
-        random_alnum = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-        request_id = f"{request_prefix}{random_alnum}"
-        if request_id not in existing_requests:
-            return request_id
+    # Extract existing numeric parts of request IDs for this category
+    existing_numbers = sorted([
+        int(request_id.replace(full_prefix, "")) for request_id in existing_requests 
+        if request_id.startswith(full_prefix) and request_id.replace(full_prefix, "").isdigit()
+    ])
 
-    return f"{request_prefix}XXXXX"  # Fallback if all combinations are exhausted
+    # Determine the next available number (incremental approach)
+    next_number = 1  # Start from 00001
+
+    for num in existing_numbers:
+        if num == next_number:
+            next_number += 1  # Move to the next available number
+        else:
+            break  # Found a gap, use this number
+
+    # If we reach 99999, switch to alphanumeric fallback
+    if next_number > 99999:
+        for _ in range(10000):  # Try up to 10,000 times to find a unique alphanumeric ID
+            random_alnum = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            request_id = f"{full_prefix}{random_alnum}"
+            if request_id not in existing_requests:
+                return request_id
+        return f"{full_prefix}XXXXX"  # Fallback if all alphanumeric options are exhausted
+
+    # Format the number as a 5-digit string and return
+    request_id = f"{full_prefix}{next_number:05d}"
+    return request_id
+
 
 # Submit Button
 if st.button("Submit Request"):
