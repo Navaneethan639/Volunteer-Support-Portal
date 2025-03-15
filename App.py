@@ -180,7 +180,7 @@ p {
 
 /* Adjust the spacing between input fields */
 div.stVerticalBlock {
-    gap: 1.69rem !important;
+    gap: 1.39rem !important;
 }
 
 </style>
