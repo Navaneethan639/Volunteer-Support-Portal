@@ -123,8 +123,8 @@ st.markdown("""
 
 /* Ensure the selected dropdown text is properly visible */
 .stSelectbox > div[data-baseweb="select"] div {
-    height: auto !important;
-    padding: 10px !important;
+    height: 39px !important;
+    padding: 5px !important;
 }
 
 /* Make field headers bold */
