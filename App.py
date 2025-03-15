@@ -63,17 +63,80 @@ message_templates_data = pd.DataFrame(message_templates_sheet.get_all_records())
 existing_requests = set(pd.DataFrame(requests_sheet.get_all_values())[0].tolist())
 
 # Custom Styling
+# st.markdown("""
+#     <style>
+#     body, .stApp { background-color: #ffffff !important; color: #333333 !important; }
+#     .stTextInput > div > div > input, .stSelectbox > div > div, .stTextArea > div > textarea {
+#         border-radius: 10px; border: 1px solid #ccc; padding: 10px;
+#     }
+#     .stButton>button {
+#         border-radius: 8px; background-color: #f8f9fa; color: #007bff; padding: 8px 12px;
+#         border: 1px solid #007bff; font-size: 14px; cursor: pointer; transition: 0.3s;
+#     }
+#     .stButton>button:hover { background-color: #007bff; color: white; }
+#     .error-message { color: #d9534f; font-weight: bold; margin-top: 10px; } /* Softer red */
+#     .info-message { color: #5cb85c; font-weight: bold; margin-top: 10px; } /* Green message */
+
+#     /* Ensure selected dropdown text is visible */
+#     .stSelectbox > div[data-baseweb="select"] {
+#         min-height: 40px !important; /* Ensures enough height */
+#         overflow: visible !important; /* Prevents text from being hidden */
+#     }
+
+#     /* Adjust dropdown panel */
+#     [data-baseweb="popover"] {
+#         overflow: visible !important;
+#     }
+
+#     /* Sometimes, setting height to auto fixes it */
+#     .stSelectbox > div[data-baseweb="select"] div {
+#         height: auto !important;
+#     }
+
+#     /* Optional: Prevent dropdown from being cut off */
+#     .st-ag {
+#         overflow: visible !important;
+#     }
+
+#     /* Fix for Streamlit's internal layout bugs */
+#     div[role="listbox"] {
+#         max-height: 250px !important; /* Ensures dropdown items are visible */
+#         overflow-y: auto !important; /* Allows scrolling */
+#     }
+#     </style>
+
+# """, unsafe_allow_html=True)
+
 st.markdown("""
     <style>
     body, .stApp { background-color: #ffffff !important; color: #333333 !important; }
-    .stTextInput > div > div > input, .stSelectbox > div > div, .stTextArea > div > textarea {
-        border-radius: 10px; border: 1px solid #ccc; padding: 10px;
+    
+    /* Bold Labels */
+    label { font-weight: bold !important; font-size: 16px !important; }
+
+    /* Consistent height for text inputs, dropdowns, and textareas */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div,
+    .stTextArea > div > textarea {
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 45px !important;  /* Adjust height */
+        font-size: 14px !important;
     }
+
     .stButton>button {
-        border-radius: 8px; background-color: #f8f9fa; color: #007bff; padding: 8px 12px;
-        border: 1px solid #007bff; font-size: 14px; cursor: pointer; transition: 0.3s;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        color: #007bff;
+        padding: 8px 12px;
+        border: 1px solid #007bff;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.3s;
     }
     .stButton>button:hover { background-color: #007bff; color: white; }
+    
     .error-message { color: #d9534f; font-weight: bold; margin-top: 10px; } /* Softer red */
     .info-message { color: #5cb85c; font-weight: bold; margin-top: 10px; } /* Green message */
 
@@ -104,8 +167,8 @@ st.markdown("""
         overflow-y: auto !important; /* Allows scrolling */
     }
     </style>
-
 """, unsafe_allow_html=True)
+
 
 # Function to normalize phone numbers to E.164 format
 def normalize_phone_number(phone_number, country_code="IN"):
