@@ -237,17 +237,17 @@ st.markdown("<h2 style='font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_a
 st.markdown(
     """
     <style>
-        /* Ensure all labels inside form elements are bold */
-        div[data-testid="stTextInputLabel"] p,
-        div[data-testid="stMarkdownContainer"] p {
+        /* Make only input field labels bold */
+        label[data-testid="stWidgetLabel"] p {
             font-weight: bold !important;
-            font-size: 16px !important; /* Adjust if needed */
+            font-size: 16px !important; /* Adjust size if needed */
             color: black !important; /* Ensures contrast */
         }
 
-        /* Reduce space between the label and input */
-        div[data-testid="stTextInput"] {
-            margin-bottom: 1.69rem !important; /* Applies gap */
+        /* Ensure consistent spacing between fields */
+        div[data-testid="stTextInput"], 
+        div[data-testid="stSelectbox"] {
+            margin-bottom: 1.69rem !important;
         }
     </style>
     """,
