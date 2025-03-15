@@ -171,12 +171,7 @@ div[role="listbox"] {
     overflow-y: auto !important;
 }
 
-/* Make <p> tags bold and slightly larger */
-p {
-    font-weight: bold !important;
-    font-size: 17px !important; /* Increased by 1 point */
-    color: #333 !important;
-}
+
 
 </style>
 
