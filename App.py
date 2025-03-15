@@ -109,63 +109,32 @@ existing_requests = set(pd.DataFrame(requests_sheet.get_all_values())[0].tolist(
 
 st.markdown("""
     <style>
-    body, .stApp { background-color: #ffffff !important; color: #333333 !important; }
-
-    /* Center the Heading */
-    .stMarkdown h1 { text-align: center !important; margin-bottom: 20px !important; }
-
-    /* Ensure uniform height & padding for input fields and dropdowns */
+    /* Match Input & Dropdown Heights */
     .stTextInput > div > div > input,
     .stSelectbox > div > div,
     .stTextArea > div > textarea {
-        border-radius: 10px;
-        border: 1px solid #ccc;
+        height: 45px !important; /* Adjust to match dropdown height */
         padding: 10px 14px !important;
-        height: 50px !important; /* Ensures uniform height */
         font-size: 16px !important;
         vertical-align: middle !important;
     }
 
-    /* Fix dropdown text alignment */
+    /* Ensure dropdown text alignment */
     .stSelectbox > div[data-baseweb="select"] {
-        min-height: 50px !important;
+        min-height: 45px !important;
         display: flex !important;
         align-items: center !important;
     }
 
-    /* Fix dropdown padding issue */
+    /* Adjust dropdown padding */
     .stSelectbox > div[data-baseweb="select"] div {
         padding-top: 10px !important;
         padding-bottom: 10px !important;
     }
 
-    /* Ensure spacing between fields */
-    .stTextInput, .stSelectbox, .stTextArea {
-        margin-bottom: 12px !important;
-    }
-
-    /* Bold Field Labels */
-    label { font-weight: bold !important; font-size: 16px !important; }
-
-    /* Button Styling */
-    .stButton>button {
-        border-radius: 8px;
-        background-color: #f8f9fa;
-        color: #007bff;
-        padding: 12px 18px;
-        border: 1px solid #007bff;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .stButton>button:hover { background-color: #007bff; color: white; }
-    
-    /* Error & Info Messages */
-    .error-message { color: #d9534f; font-weight: bold; margin-top: 10px; }
-    .info-message { color: #5cb85c; font-weight: bold; margin-top: 10px; }
-
     </style>
 """, unsafe_allow_html=True)
+
 
 
 
