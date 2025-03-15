@@ -240,14 +240,8 @@ st.markdown(
         /* Make only input field labels bold */
         label[data-testid="stWidgetLabel"] p {
             font-weight: bold !important;
-            font-size: 16px !important; /* Adjust size if needed */
+            font-size: 17px !important; /* Adjust size if needed */
             color: black !important; /* Ensures contrast */
-        }
-
-        /* Ensure consistent spacing between fields */
-        div[data-testid="stTextInput"], 
-        div[data-testid="stSelectbox"] {
-            margin-bottom: 1.69rem !important;
         }
     </style>
     """,
