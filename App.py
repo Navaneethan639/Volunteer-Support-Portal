@@ -143,6 +143,7 @@ def get_message(template_name):
 
 # Retrieve the specific message
 assist_message = get_message("Reach Out to Add Credentials Message")
+step_out_request_message = get_message("Step Out Request Default Message")
 
 # Streamlit UI
 st.title("🔹 Raise a Request")
@@ -439,11 +440,15 @@ if st.button("Submit Request"):
 
         # Display different messages based on the sub-category
         if sub_category == "Step out of Ashram":
-            st.success(
-                "🔹 Please request your department coordinator to send an approval email for your step out request to "
-                "**overseas.volunteers@ishafoundation.org**, for us to process it further.\n\n"
-                f"Your request ID: **{request_id}**"
-            )
+            # Format the message with request ID
+            formatted_message = step_out_message.replace("{request_id}", request_id)            
+            st.success(formatted_message)
+            
+            # st.success(
+            #     "🔹 Please request your department coordinator to send an approval email for your step out request to "
+            #     "**overseas.volunteers@ishafoundation.org**, for us to process it further.\n\n"
+            #     f"Your request ID: **{request_id}**"
+            # )
         else:
             st.success(
                 f"✅ **We have received your request (Request ID: {request_id}).**\n\n"
