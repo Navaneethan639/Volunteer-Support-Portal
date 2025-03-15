@@ -109,30 +109,69 @@ existing_requests = set(pd.DataFrame(requests_sheet.get_all_values())[0].tolist(
 
 st.markdown("""
     <style>
-    /* Match Input & Dropdown Heights */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div,
-    .stTextArea > div > textarea {
-        height: 45px !important; /* Adjust to match dropdown height */
-        padding: 10px 14px !important;
-        font-size: 16px !important;
-        vertical-align: middle !important;
-    }
+/* Fix dropdown content visibility */
+.stSelectbox > div[data-baseweb="select"] {
+    min-height: 45px !important; /* Ensures enough height */
+    overflow: visible !important; /* Prevents text from being hidden */
+    font-size: 16px !important; /* Ensures readability */
+}
 
-    /* Ensure dropdown text alignment */
-    .stSelectbox > div[data-baseweb="select"] {
-        min-height: 45px !important;
-        display: flex !important;
-        align-items: center !important;
-    }
+/* Adjust dropdown panel */
+[data-baseweb="popover"] {
+    overflow: visible !important;
+}
 
-    /* Adjust dropdown padding */
-    .stSelectbox > div[data-baseweb="select"] div {
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
+/* Ensure the selected dropdown text is properly visible */
+.stSelectbox > div[data-baseweb="select"] div {
+    height: auto !important;
+    padding: 10px !important;
+}
 
-    </style>
+/* Make field headers bold */
+.stMarkdown h4, .stMarkdown h5, .stMarkdown h6, label {
+    font-weight: bold !important;
+    font-size: 16px !important;
+    color: #333 !important;
+}
+
+/* Add space below the form header */
+h1, h2 {
+    margin-bottom: 15px !important;
+}
+
+/* Increase padding for form fields */
+.stTextInput > div > div > input,
+.stSelectbox > div > div,
+.stTextArea > div > textarea {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Improve button styling */
+.stButton>button {
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.stButton>button:hover {
+    background-color: #0056b3;
+}
+
+/* Ensure consistent layout */
+div[role="listbox"] {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+}
+</style>
+
 """, unsafe_allow_html=True)
 
 
