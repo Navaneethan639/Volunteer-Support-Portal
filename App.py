@@ -229,8 +229,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
-
-# email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
 email_verified = False
 phone_verified = False
 volunteer_category = None
