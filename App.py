@@ -178,6 +178,13 @@ p {
     font-size: 17px !important; /* Increased by 1 point */
 }
 
+/* Make only input field labels bold */
+label[data-testid="stWidgetLabel"] p {
+    font-weight: bold !important;
+    font-size: 17px !important; /* Adjust size if needed */
+    color: black !important; /* Ensures contrast */
+}
+
 /* Adjust the spacing between input fields */
 div.stVerticalBlock {
     gap: 1.39rem !important;
@@ -234,20 +241,6 @@ step_out_request_message = get_message("Step Out Request Default Message")
 st.markdown("<h2 style='font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_allow_html=True)
 
 # Input Variables
-st.markdown(
-    """
-    <style>
-        /* Make only input field labels bold */
-        label[data-testid="stWidgetLabel"] p {
-            font-weight: bold !important;
-            font-size: 17px !important; /* Adjust size if needed */
-            color: black !important; /* Ensures contrast */
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
 email_verified = False
 phone_verified = False
