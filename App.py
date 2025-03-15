@@ -175,6 +175,7 @@ div[role="listbox"] {
 /* Make <p> tags bold and slightly larger */
 p {
 
+    font-size: 17px !important; /* Increased by 1 point */
 }
 
 /* Adjust the spacing between input fields */
