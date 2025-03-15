@@ -147,7 +147,7 @@ h1, h2 {
     border-radius: 10px;
     border: 1px solid #ccc;
     padding: 12px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 /* Improve button styling */
