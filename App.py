@@ -224,7 +224,9 @@ step_out_request_message = get_message("Step Out Request Default Message")
 st.markdown("<h2 style='font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_allow_html=True)
 
 # Input Variables
-email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
+st.markdown("**📧 Email ID**", unsafe_allow_html=True)
+email = st.text_input("", placeholder="Enter your Email ID")
+# email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
 email_verified = False
 phone_verified = False
 volunteer_category = None
