@@ -51,9 +51,13 @@ sheet = client.open_by_url(SHEET_URL)
 # sheet = client.open('Volunteer Support Portal')
 participants_sheet = sheet.worksheet("Volunteer Details")
 requests_sheet = sheet.worksheet("Requests")
+message_templates_sheet = sheet.worksheet("Message Templates")
 
 # Load participant data into a DataFrame
 participants_data = pd.DataFrame(participants_sheet.get_all_records())
+
+# Load Message Templates sheet
+message_templates_data = pd.DataFrame(message_templates_sheet.get_all_records())
 
 # Load existing request IDs
 existing_requests = set(pd.DataFrame(requests_sheet.get_all_values())[0].tolist())
@@ -130,6 +134,16 @@ def get_country_code_map():
 country_code_map = get_country_code_map()
 default_country = "IN (+91)"  # Default to India
 
+# Function to get message based on template name
+def get_message(template_name):
+    message_row = message_templates_data[message_templates_data["Template Name"] == template_name]
+    if not message_row.empty:
+        return message_row.iloc[0]["Message"]
+    return "⚠️ Please visit counter 23/24 at Welcome Point for further assistance with your request."
+
+# Retrieve the specific message
+assist_message = get_message("Reach Out to Add Credentials Message")
+
 # Streamlit UI
 st.title("🔹 Raise a Request")
 
@@ -198,7 +212,7 @@ if st.session_state.get("forgot_email_clicked", False):
             st.success("✅ Now you can fill the request type and description to submit the form.")
         else:
             st.error("❌ Phone number does not exist in the database.")
-            st.warning("⚠️ Please visit counter 23/24 at Welcome Point for further assistance with your request.")
+            st.warning(assist_message)  # Use the dynamically fetched message
             
 
 # Define request type options based on participant type
