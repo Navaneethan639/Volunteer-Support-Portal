@@ -221,7 +221,7 @@ step_out_request_message = get_message("Step Out Request Default Message")
 
 # Streamlit UI
 # st.title("🔹 Raise a Request")
-st.markdown("<h2 style='font-size:24px; font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_allow_html=True)
 
 # Input Variables
 email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
