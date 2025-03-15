@@ -234,7 +234,7 @@ st.markdown("<h2 style='font-weight: bold;'>🔹 Raise a Request</h2>", unsafe_a
 
 # Input Variables
 st.markdown(
-    '<style> label { font-weight: bold; } </style>',
+    '<style> label { font-weight: bold !important; } </style>',
     unsafe_allow_html=True
 )
 email = st.text_input("📧 Email ID", placeholder="Enter your Email ID")
