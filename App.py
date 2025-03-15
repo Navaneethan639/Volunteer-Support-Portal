@@ -179,7 +179,7 @@ p {
 }
 
 /* Adjust the spacing between input fields */
-div.st-emotion-cache-zlnjdg {
+div.stVerticalBlock {
     gap: 1.69rem !important;
 }
 
