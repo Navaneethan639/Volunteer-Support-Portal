@@ -441,7 +441,7 @@ if st.button("Submit Request"):
         # Display different messages based on the sub-category
         if sub_category == "Step out of Ashram":
             # Format the message with request ID
-            formatted_message = step_out_message.replace("{request_id}", request_id)            
+            formatted_message = step_out_request_message.replace("{request_id}", request_id)            
             st.success(formatted_message)
             
             # st.success(
